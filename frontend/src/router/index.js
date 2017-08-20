@@ -6,7 +6,7 @@ Vue.use(Router)
 export default new Router({
   routes: [
     {
-      path: '/todos',
+      path: '/',
       name: 'Todos',
       component: require('@/components/Todos.vue')
     },
