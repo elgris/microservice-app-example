@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"encoding/json"
 	"log"
 	"net/http"
 	"time"
@@ -19,25 +19,6 @@ var (
 	ErrWrongCredentials = echo.NewHTTPError(http.StatusUnauthorized, "username or password is invalid")
 
 	jwtSecret = "myfancysecret"
-
-	allowedUsers = map[string]User{
-		"admin_admin": User{
-			Name: "admin",
-			Role: "admin",
-		},
-		"peterf_12345": User{
-			Name: "Peter F",
-			Role: "user",
-		},
-		"john_doe": User{
-			Name: "John Doe",
-			Role: "user",
-		},
-		"janed_ddd": User{
-			Name: "Jane Doe",
-			Role: "user",
-		},
-	}
 )
 
 func main() {
@@ -47,6 +28,7 @@ func main() {
 	// Middleware
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
+	e.Use(middleware.CORS())
 
 	// Route => handler
 	e.GET("/version", func(c echo.Context) error {
@@ -59,29 +41,23 @@ func main() {
 	e.Logger.Fatal(e.Start(":1323"))
 }
 
-type User struct {
-	Name string
-	Role string
-}
-
-func login(username, password string) (User, error) {
-	userKey := fmt.Sprintf("%s_%s", username, password)
-	u, ok := allowedUsers[userKey]
-	if !ok {
-		return u, ErrWrongCredentials // this is BAD, business logic layer must not return HTTP-specific errors
-	}
-
-	return u, nil
+type LoginRequest struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
 }
 
 func loginHandler(c echo.Context) error {
-	username := c.FormValue("username")
-	password := c.FormValue("password")
+	requestData := LoginRequest{}
+	decoder := json.NewDecoder(c.Request().Body)
+	if err := decoder.Decode(&requestData); err != nil {
+		log.Printf("could not read credentials from POST body: %s", err.Error())
+		return ErrHttpGenericMessage
+	}
 
-	user, err := login(username, password)
+	user, err := login(requestData.Username, requestData.Password)
 	if err != nil {
 		if err != ErrWrongCredentials {
-			log.Printf("could not authorize user '%s': %s", username, err.Error())
+			log.Printf("could not authorize user '%s': %s", requestData.Username, err.Error())
 			return ErrHttpGenericMessage
 		}
 
