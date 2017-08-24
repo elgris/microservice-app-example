@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -18,6 +19,25 @@ var (
 	ErrWrongCredentials = echo.NewHTTPError(http.StatusUnauthorized, "username or password is invalid")
 
 	jwtSecret = "myfancysecret"
+
+	allowedUsers = map[string]User{
+		"admin_admin": User{
+			Name: "admin",
+			Role: "admin",
+		},
+		"peterf_12345": User{
+			Name: "Peter F",
+			Role: "user",
+		},
+		"john_doe": User{
+			Name: "John Doe",
+			Role: "user",
+		},
+		"janed_ddd": User{
+			Name: "Jane Doe",
+			Role: "user",
+		},
+	}
 )
 
 func main() {
@@ -29,12 +49,29 @@ func main() {
 	e.Use(middleware.Recover())
 
 	// Route => handler
-	e.GET("/", func(c echo.Context) error {
-		return c.String(http.StatusOK, "Hello, World!\n")
+	e.GET("/version", func(c echo.Context) error {
+		return c.String(http.StatusOK, "Auth API, written in Go\n")
 	})
+
+	e.POST("/login", loginHandler)
 
 	// Start server
 	e.Logger.Fatal(e.Start(":1323"))
+}
+
+type User struct {
+	Name string
+	Role string
+}
+
+func login(username, password string) (User, error) {
+	userKey := fmt.Sprintf("%s_%s", username, password)
+	u, ok := allowedUsers[userKey]
+	if !ok {
+		return u, ErrWrongCredentials // this is BAD, business logic layer must not return HTTP-specific errors
+	}
+
+	return u, nil
 }
 
 func loginHandler(c echo.Context) error {
@@ -47,7 +84,8 @@ func loginHandler(c echo.Context) error {
 			log.Printf("could not authorize user '%s': %s", username, err.Error())
 			return ErrHttpGenericMessage
 		}
-		return echo.ErrUnauthorized
+
+		return ErrWrongCredentials
 	}
 	token := jwt.New(jwt.SigningMethodHS256)
 
