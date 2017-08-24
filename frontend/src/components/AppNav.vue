@@ -3,6 +3,9 @@
   <nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse fixed-top">
     <a class="navbar-brand" href="#">70d0 0v3r3n61n33r1n6</a>
     <ul class="navbar-nav mr-auto">
+      <li class="nav-item" v-show="isAdmin()">
+        <a class="btn btn-success mr-sm-2" href="#/admin">Admin</a>
+      </li>
     </ul>
 
     <ul class="navbar-nav">
@@ -18,16 +21,27 @@
 </template>
 
 <script>
-import { isLoggedIn, logout } from '../user/auth'
+
+import Auth from '@/auth'
 
 export default {
   name: 'app-nav',
+
+  data () {
+    return {
+      auth: this.$store.state.auth
+    }
+  },
+
   methods: {
-    handleLogout () {
-      logout()
+    logout () {
+      Auth.logout()
     },
     isLoggedIn () {
-      return isLoggedIn()
+      return Auth.isLoggedIn()
+    },
+    isAdmin () {
+      return Auth.isAdmin()
     }
   }
 }

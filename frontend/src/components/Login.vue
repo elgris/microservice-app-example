@@ -75,17 +75,26 @@
 </template>
 
 <script>
-import Spinner from '@/components/Spinner'
+import Spinner from '@/components/common/Spinner'
 import AppNav from '@/components/AppNav'
-import {login} from '@/user/auth'
 
 export default {
   name: 'login',
   components: {AppNav, Spinner},
   methods: {
-    doLogin: function (data) {
-      console.log(data)
-      login()
+    doLogin: function () {
+      this.loggingIn = true
+      const credentials = {
+        username: this.credentials.username,
+        password: this.credentials.password
+      }
+
+      this.$auth.login(credentials, 'todos').then((response) => {
+        this.loggingIn = false
+        this.error = {
+          password: response
+        }
+      })
     }
   },
   data () {

@@ -4,7 +4,7 @@
 
 
 <script>
-import AppNav from './AppNav'
+import AppNav from '@/components/AppNav'
 export default {
   name: 'todos',
   components: {AppNav}
