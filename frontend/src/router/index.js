@@ -8,24 +8,25 @@ export default new Router({
   routes: [
     {
       path: '/login',
-      name: 'Login',
+      name: 'login',
       component: require('@/components/Login.vue')
     },
     {
       path: '/',
-      name: 'Todos',
+      alias: '/todos',
+      name: 'todos',
       component: require('@/components/Todos.vue'),
       beforeEnter: requireLoggedIn
     },
     {
       path: '/profile',
-      name: 'Profile',
+      name: 'profile',
       component: require('@/components/Profile.vue'),
       beforeEnter: requireLoggedIn
     },
     {
       path: '/admin/',
-      name: 'Users',
+      name: 'users',
       component: require('@/components/Users.vue'),
       beforeEnter: requireAdmin
     }
