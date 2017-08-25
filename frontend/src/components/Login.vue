@@ -15,26 +15,19 @@
                     <div class="col-md-3"></div>
                     <div class="col-md-6">
                         <div class="form-group has-danger">
-                            <label class="sr-only" for="email">E-Mail Address</label>
+                            <label class="sr-only" for="username">Login</label>
                             <div class="input-group mb-2 mr-sm-2 mb-sm-0">
                                 <div class="input-group-addon" style="width: 2.6rem"><i class="fa fa-at"></i></div>
                                 <input
                                   type="text"
-                                  name="email"
+                                  name="username"
                                   class="form-control"
-                                  placeholder="you@example.com"
-                                  v-model="credentials.email"
+                                  placeholder="johndoe"
+                                  v-model="credentials.username"
                                   required
                                   autofocus
                                 >
                             </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-control-feedback">
-                            <span class="text-danger align-middle">
-                                <i class="fa fa-close"></i> {{ error.email }}
-                            </span>
                         </div>
                     </div>
                 </div>
@@ -49,20 +42,23 @@
                                   type="password"
                                   name="password"
                                   class="form-control"
-                                  placeholder="Password"
+                                  placeholder="foofoofoo"
                                   v-model="credentials.password"
                                   required>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                </div>
+                <div class="row" style="padding-top: 1rem">
+                    <div class="col-md-3"></div>
+                    <div class="col-md-6">
                         <div class="form-control-feedback">
                             <span class="text-danger align-middle">
-                            {{ error.password }}
+                            {{ error.message }}
                             </span>
                         </div>
                     </div>
-                </div>
+                </div>                
                 <div class="row" style="padding-top: 1rem">
                     <div class="col-md-3"></div>
                     <div class="col-md-6">
@@ -92,7 +88,7 @@ export default {
       this.$auth.login(credentials, 'todos').then((response) => {
         this.loggingIn = false
         this.error = {
-          password: response
+          message: response.body.message
         }
       })
     }
@@ -100,7 +96,7 @@ export default {
   data () {
     return {
       credentials: {
-        email: '',
+        username: '',
         password: ''
       },
       error: {
