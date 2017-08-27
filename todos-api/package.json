@@ -1,0 +1,19 @@
+{
+  "name": "todos-api",
+  "version": "1.0.0",
+  "description": "API for Todos in my little example app",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "author": "elgris <iddqd07@yandex.ru>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.15.4",
+    "express-jwt": "^5.3.0",
+    "memory-cache": "^0.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.11.0"
+  }
+}

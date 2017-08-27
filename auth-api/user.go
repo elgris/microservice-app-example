@@ -4,24 +4,29 @@ import "fmt"
 
 var allowedUsers = map[string]User{
 	"admin_admin": User{
+		ID:   "1",
 		Name: "admin",
 		Role: "admin",
 	},
 	"peterf_12345": User{
+		ID:   "2",
 		Name: "Peter F",
 		Role: "user",
 	},
 	"johndoe_foofoofoo": User{
+		ID:   "3",
 		Name: "John Doe",
 		Role: "user",
 	},
 	"janed_ddd": User{
+		ID:   "4",
 		Name: "Jane Doe",
 		Role: "user",
 	},
 }
 
 type User struct {
+	ID   string
 	Name string
 	Role string
 }
