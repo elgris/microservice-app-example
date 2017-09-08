@@ -4,7 +4,6 @@ This is an example of web application comprising of several components communica
 
 The app itself is a simple TODO app that additionally authenticates users and provides some admin functionality.
 
-
 ## Components
 
 1. [Frontend](/frontend) part is a Javascript application, provides UI. Created with [VueJS](http://vuejs.org)
@@ -15,7 +14,7 @@ The app itself is a simple TODO app that additionally authenticates users and pr
 
 ## Use cases
 
-- Evaluate various tracing instruments: how easy they integrate, do they have any bugs with different languages, etc
+- Evaluate various instruments (monitoring, tracing, you name it): how easy they integrate, do they have any bugs with different languages, etc.
 
 ## Contribution
 
