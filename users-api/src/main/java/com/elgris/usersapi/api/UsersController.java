@@ -2,13 +2,17 @@ package com.elgris.usersapi.api;
 
 import com.elgris.usersapi.models.User;
 import com.elgris.usersapi.repository.UserRepository;
+import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.LinkedList;
 import java.util.List;
 
-@RestController("users")
+@RestController()
+@RequestMapping("/user")
 public class UsersController {
 
     @Autowired
@@ -23,9 +27,21 @@ public class UsersController {
         return response;
     }
 
-    @RequestMapping(value = "/{id}",  method = RequestMethod.GET)
-    public User getUser(@PathVariable("id") Long id) {
-        return userRepository.findOne(id);
+    @RequestMapping(value = "/{username}",  method = RequestMethod.GET)
+    public User getUser(HttpServletRequest request, @PathVariable("username") String username) {
+
+        Object requestAttribute = request.getAttribute("claims");
+        if((requestAttribute == null) || !(requestAttribute instanceof Claims)){
+            throw new RuntimeException("Did not receive required data from JWT token");
+        }
+
+        Claims claims = (Claims) requestAttribute;
+
+        if (!username.equalsIgnoreCase((String)claims.get("name"))) {
+            throw new AccessDeniedException("No access for requested entity");
+        }
+        
+        return userRepository.findOneByUsername(username);
     }
 
 }

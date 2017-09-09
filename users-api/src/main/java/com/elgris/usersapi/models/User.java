@@ -8,9 +8,6 @@ public class User {
 
     @Id
     @Column
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-    @Column
     private String username;
     @Column
     private String firstname;
@@ -18,14 +15,6 @@ public class User {
     private String lastname;
     @Column
     private UserRole role;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getUsername() {
         return username;
