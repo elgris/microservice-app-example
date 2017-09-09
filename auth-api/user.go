@@ -15,9 +15,10 @@ var allowedUserHashes = map[string]interface{}{
 }
 
 type User struct {
-	ID   string
-	Name string
-	Role string
+	Username  string `json:"username"`
+	FirstName string `json:"firstname"`
+	LastName  string `json:"lastname"`
+	Role      string `json:"role"`
 }
 
 type UserService struct {
@@ -32,7 +33,7 @@ func (h *UserService) Login(username, password string) (User, error) {
 		return user, err
 	}
 
-	userKey := fmt.Sprintf("%s_%s", user.Name, password)
+	userKey := fmt.Sprintf("%s_%s", username, password)
 
 	if _, ok := h.AllowedUserHashes[userKey]; !ok {
 		return user, ErrWrongCredentials // this is BAD, business logic layer must not return HTTP-specific errors
@@ -48,8 +49,7 @@ func (h *UserService) getUser(username string) (User, error) {
 	if err != nil {
 		return user, err
 	}
-
-	url := fmt.Sprintf("%s/users/%s", h.UserAPIAddress, username)
+	url := fmt.Sprintf("http://%s/users/%s", h.UserAPIAddress, username)
 	req, _ := http.NewRequest("GET", url, nil)
 	req.Header.Add("Authorization", "Bearer "+token)
 

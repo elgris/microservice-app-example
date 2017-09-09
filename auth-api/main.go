@@ -81,8 +81,9 @@ func getLoginHandler(userService UserService) echo.HandlerFunc {
 
 		// Set claims
 		claims := token.Claims.(jwt.MapClaims)
-		claims["id"] = user.ID
-		claims["name"] = user.Name
+		claims["username"] = user.Username
+		claims["firstname"] = user.FirstName
+		claims["lastname"] = user.LastName
 		claims["role"] = user.Role
 		claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
 

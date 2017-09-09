@@ -37,10 +37,10 @@ public class UsersController {
 
         Claims claims = (Claims) requestAttribute;
 
-        if (!username.equalsIgnoreCase((String)claims.get("name"))) {
+        if (!username.equalsIgnoreCase((String)claims.get("username"))) {
             throw new AccessDeniedException("No access for requested entity");
         }
-        
+
         return userRepository.findOneByUsername(username);
     }
 
