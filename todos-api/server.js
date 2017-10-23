@@ -3,7 +3,7 @@ const jwt = require('express-jwt');
 
 const routes = require('./routes')
 
-const port = process.env.TODO_API_PORT || 3000;
+const port = process.env.TODO_API_PORT || 8082;
 const jwtSecret = process.env.JWT_SECRET || "myfancysecret";
 const app = express()
 

@@ -23,18 +23,6 @@ class HttpSecurityConfiguration {
         protected void configure(HttpSecurity http) throws Exception {
             http.antMatcher("/**")
                     .addFilterAfter(jwtAuthenticationFilter, BasicAuthenticationFilter.class);
-//                    .antMatcher("/user/**")
-//                    .addFilterBefore(readUserDataFilter, JwtAuthenticationFilter.class);
-//                    .authorizeRequests()
-//                    .and()
-//                    .addFilter(jwtAuthenticationFilter)
-//
-//                    .requestMatchers()
-//                    .antMatchers("/**")
-//                    .and()
-//                    .addFilterBefore(captchaFilter, (Class<? extends Filter>) ChannelProcessingFilter.class)
-//                    .authorizeRequests()
-//                    .anyRequest().authenticated();
         }
     }
 }

@@ -27,7 +27,7 @@ exports.create = function (req, res) {
 
 exports.get = function (req, res) {
     const data = getTodoData(req.user.id)
-    const id = req.path.id //????
+    const id = req.path.id
     todo = data.items[id]
     if (todo == null) {
         return res.status(404).send({
@@ -40,7 +40,7 @@ exports.get = function (req, res) {
 
 exports.update = function (req, res) {
     const data = getTodoData(req.user.id)
-    const id = req.path.id //????
+    const id = req.path.id
     todo = data.items[id]
     if (todo == null) {
         return res.status(404).send({
