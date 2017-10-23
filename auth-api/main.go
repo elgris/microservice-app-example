@@ -24,7 +24,12 @@ var (
 
 func main() {
 	port := os.Getenv("AUTH_API_PORT")
-	userAPIAddress := os.Getenv("USER_API_ADDRESS")
+	userAPIAddress := os.Getenv("USERS_API_ADDRESS")
+
+	envJwtSecret := os.Getenv("JWT_SECRET")
+	if len(envJwtSecret) != 0 {
+		jwtSecret = envJwtSecret
+	}
 
 	userService := UserService{
 		UserAPIAddress: userAPIAddress,

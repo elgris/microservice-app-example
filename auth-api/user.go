@@ -49,7 +49,7 @@ func (h *UserService) getUser(username string) (User, error) {
 	if err != nil {
 		return user, err
 	}
-	url := fmt.Sprintf("http://%s/users/%s", h.UserAPIAddress, username)
+	url := fmt.Sprintf("%s/users/%s", h.UserAPIAddress, username)
 	req, _ := http.NewRequest("GET", url, nil)
 	req.Header.Add("Authorization", "Bearer "+token)
 

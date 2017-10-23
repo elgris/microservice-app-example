@@ -1,0 +1,34 @@
+version: "3"
+services:
+  frontend:
+    build: ./frontend
+    environment:
+      PORT: 8080
+    ports:
+      - 8080:8080
+    depends_on:
+      - auth-api
+      - todos-api
+      - users-api
+  
+  auth-api:
+    build: ./auth-api
+    environment:
+      AUTH_API_PORT: 8081
+      JWT_SECRET: myfancysecret         
+      USERS_API_ADDRESS: "http://users-api:8083"    
+    depends_on:
+      - users-api     
+  
+  todos-api:
+    build: ./todos-api
+    environment:
+      TODO_API_PORT: 8082
+      JWT_SECRET: myfancysecret    
+     
+  users-api:
+    build: ./users-api
+    environment:
+     SERVER_PORT: 8083
+     JWT_SECRET: myfancysecret
+    

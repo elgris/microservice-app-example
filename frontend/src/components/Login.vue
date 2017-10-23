@@ -22,7 +22,7 @@
                                   type="text"
                                   name="username"
                                   class="form-control"
-                                  placeholder="johndoe"
+                                  placeholder="johnd"
                                   v-model="credentials.username"
                                   required
                                   autofocus
@@ -42,7 +42,7 @@
                                   type="password"
                                   name="password"
                                   class="form-control"
-                                  placeholder="foofoofoo"
+                                  placeholder="foo"
                                   v-model="credentials.password"
                                   required>
                             </div>
@@ -71,40 +71,40 @@
 </template>
 
 <script>
-import Spinner from '@/components/common/Spinner'
-import AppNav from '@/components/AppNav'
+import Spinner from "@/components/common/Spinner";
+import AppNav from "@/components/AppNav";
 
 export default {
-  name: 'login',
-  components: {AppNav, Spinner},
+  name: "login",
+  components: { AppNav, Spinner },
   methods: {
-    doLogin: function () {
-      this.loggingIn = true
+    doLogin: function() {
+      this.loggingIn = true;
       const credentials = {
         username: this.credentials.username,
         password: this.credentials.password
-      }
+      };
 
-      this.$auth.login(credentials, 'todos').then((response) => {
-        this.loggingIn = false
+      this.$auth.login(credentials, "todos").then(response => {
+        this.loggingIn = false;
         this.error = {
           message: response.body.message
-        }
-      })
+        };
+      });
     }
   },
-  data () {
+  data() {
     return {
       credentials: {
-        username: '',
-        password: ''
+        username: "",
+        password: ""
       },
       error: {
-        email: '',
-        password: ''
+        email: "",
+        password: ""
       },
       loggingIn: false
-    }
+    };
   }
-}
+};
 </script>
