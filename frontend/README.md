@@ -1,8 +1,11 @@
 # frontend
 
-> UI for sample distributed TODO app
+UI for sample distributed TODO app build with VueJS
 
-## Build Setup
+## Configuration
+- `PORT` - a port the application binds to 
+
+## Building and running
 
 ``` bash
 # install dependencies
