@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 
 	jwt "github.com/dgrijalva/jwt-go"
@@ -59,8 +60,17 @@ func (h *UserService) getUser(username string) (User, error) {
 	}
 
 	defer resp.Body.Close()
+	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return user, err
+	}
 
-	err = json.NewDecoder(resp.Body).Decode(&user)
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+
+		return user, fmt.Errorf("could not get user data: %s", string(bodyBytes))
+	}
+
+	err = json.Unmarshal(bodyBytes, &user)
 
 	return user, err
 }
