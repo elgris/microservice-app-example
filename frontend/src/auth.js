@@ -10,7 +10,7 @@ import decode from 'jwt-decode'
  * TODO: change hardcoded port to configurable one
  */
 const LOGIN_URL = window.location.protocol + '//' + window.location.hostname + ':8080/login'
-const ROLE_ADMIN = 'admin'
+const ROLE_ADMIN = 'ADMIN'
 
 /**
 * Auth Plugin
