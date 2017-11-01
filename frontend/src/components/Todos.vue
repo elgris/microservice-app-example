@@ -2,7 +2,7 @@
   <div>
     <app-nav></app-nav>
     <div class='container'>
-
+      <spinner v-show='isProcessing' message='Processing...'></spinner>
       <div class="row">
         <div class="col-sm-12 text-left">
         <h1>
@@ -11,6 +11,16 @@
             <small v-if="total">({{ total }})</small>
           </transition>
         </h1>
+        </div>
+      </div>
+
+      <div class='row'>
+        <div class='col-sm-12'>
+          <div class='form-control-feedback'>
+            <span class='text-danger align-middle'>
+            {{ errorMessage }}
+            </span>
+          </div>
         </div>
       </div>
 
@@ -45,28 +55,22 @@
 <script>
 import AppNav from '@/components/AppNav'
 import TodoItem from '@/components/TodoItem'
+import Spinner from '@/components/common/Spinner'
 
 export default {
   name: 'todos',
-  components: {AppNav, TodoItem},
+  components: {AppNav, TodoItem, Spinner},
   props: {
     tasks: {
       default: function () {
-        return [
-          {
-            id: 1,
-            content: 'Create new todo'
-          },
-          {
-            id: 2,
-            content: 'TODO#2'
-          }
-        ]
+        return []
       }
     }
   },
   data () {
     return {
+      isProcessing: false,
+      errorMessage: '',
       newTask: ''
     }
   },
@@ -78,10 +82,21 @@ export default {
   methods: {
     addTask () {
       if (this.newTask) {
-        this.tasks.push({
+        this.isProcessing = true
+        this.errorMessage = ''
+
+        var task = {
           content: this.newTask
+        }
+
+        this.$http.post('/todos', task).then(response => {
+          this.newTask = ''
+          this.isProcessing = false
+          this.tasks.push(task)
+        }, error => {
+          this.isProcessing = false
+          this.errorMessage = JSON.stringify(error.body) + '. Response code: ' + error.status
         })
-        this.newTask = ''
       }
     },
     removeTask (index) {

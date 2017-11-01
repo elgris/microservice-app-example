@@ -54,11 +54,11 @@
                     <div class='col-md-6'>
                         <div class='form-control-feedback'>
                             <span class='text-danger align-middle'>
-                            {{ error.message }}
+                            {{ errorMessage }}
                             </span>
                         </div>
                     </div>
-                </div>                
+                </div>
                 <div class='row' style='padding-top: 1rem'>
                     <div class='col-md-3'></div>
                     <div class='col-md-6'>
@@ -80,6 +80,8 @@ export default {
   methods: {
     doLogin: function () {
       this.loggingIn = true
+      this.errorMessage = ''
+
       const credentials = {
         username: this.credentials.username,
         password: this.credentials.password
@@ -87,9 +89,7 @@ export default {
 
       this.$auth.login(credentials, 'todos').then(response => {
         this.loggingIn = false
-        this.error = {
-          message: response.body.message
-        }
+        this.errorMessage = response.body.message
       })
     }
   },
@@ -99,10 +99,7 @@ export default {
         username: '',
         password: ''
       },
-      error: {
-        email: '',
-        password: ''
-      },
+      errorMessage: '',
       loggingIn: false
     }
   }

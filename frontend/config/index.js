@@ -29,7 +29,11 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/login': {
-        target: 'http://auth-api:8081',
+        target: process.env.AUTH_API_ADDRESS || 'http://localhost:8081',
+        secure: false
+      },
+      '/todos': {
+        target: process.env.TODOS_API_ADDRESS || 'http://localhost:8082',
         secure: false
       }
     },

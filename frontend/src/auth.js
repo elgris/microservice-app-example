@@ -95,7 +95,6 @@ export default {
    */
   setAuthHeader (request) {
     request.headers.set('Authorization', 'Bearer ' + store.state.auth.accessToken)
-    request.params.access_token = store.state.auth.accessToken
   },
 
   isAdmin () {

@@ -17,18 +17,6 @@ export default new Router({
       name: 'todos',
       component: require('@/components/Todos.vue'),
       beforeEnter: requireLoggedIn
-    },
-    {
-      path: '/profile',
-      name: 'profile',
-      component: require('@/components/Profile.vue'),
-      beforeEnter: requireLoggedIn
-    },
-    {
-      path: '/admin/',
-      name: 'users',
-      component: require('@/components/Users.vue'),
-      beforeEnter: requireAdmin
     }
   ]
 })
@@ -43,15 +31,3 @@ function requireLoggedIn (to, from, next) {
     next()
   }
 }
-
-function requireAdmin (to, from, next) {
-  if (!Auth.isAdmin()) {
-    next({
-      path: '/login',
-      query: { redirect: to.fullPath }
-    })
-  } else {
-    next()
-  }
-}
-
