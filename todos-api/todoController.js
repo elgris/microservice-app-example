@@ -11,7 +11,7 @@ exports.list = function (req, res) {
 exports.create = function (req, res) {
     // TODO: must be transactional and protected for concurrent access, but
     // the purpose of the whole example app it's enough
-    const data = getTodoData(req.user.id)
+    const data = getTodoData(req.user.username)
     const todo = {
         content: req.body.content,
         id: data.lastInsertedID
@@ -19,7 +19,7 @@ exports.create = function (req, res) {
 
     data.lastInsertedID++
 
-    data.items.append(todo)
+    data.items[data.lastInsertedID] = todo
     setTodoData(req.user.id, data)
 
     res.json(todo)
@@ -58,18 +58,15 @@ exports.update = function (req, res) {
 exports.delete = function (req, res) {
     const data = getTodoData(req.user.id)
     const id = req.path.id //????
-    todo = data.items[id]
-    if (todo != null) {
-        // TODO: delete an item from data map
-        setTodoData(req.user.id, data)
-    }
+    data.items.delete(id)
+    setTodoData(req.user.id, data)
 
     return res.status(204)
 };
 
 function getTodoData (userID) {
-    data = cache.get(userID)
-    if (data == nil) {
+    var data = cache.get(userID)
+    if (data == null) {
         data = {
             items: {
                 '1': {

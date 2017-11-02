@@ -74,12 +74,29 @@ export default {
       newTask: ''
     }
   },
+  created () {
+    this.loadTasks()
+  },
   computed: {
     total () {
       return this.tasks.length
     }
   },
   methods: {
+    loadTasks () {
+      this.isProcessing = true
+      this.errorMessage = ''
+      this.$http.get('/todos').then(response => {
+        for (var i in response.body) {
+          this.tasks.push(response.body[i])
+        }
+        this.isProcessing = false
+      }, error => {
+        this.isProcessing = false
+        this.errorMessage = JSON.stringify(error.body) + '. Response code: ' + error.status
+      })
+    },
+
     addTask () {
       if (this.newTask) {
         this.isProcessing = true
@@ -99,7 +116,9 @@ export default {
         })
       }
     },
+
     removeTask (index) {
+      // TODO: delete physically
       this.tasks.splice(index, 1)
     }
   }
