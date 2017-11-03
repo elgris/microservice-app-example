@@ -25,43 +25,14 @@ exports.create = function (req, res) {
     res.json(todo)
 };
 
-exports.get = function (req, res) {
-    const data = getTodoData(req.user.id)
-    const id = req.path.id
-    todo = data.items[id]
-    if (todo == null) {
-        return res.status(404).send({
-            message: 'No user found'
-        })
-    }
-
-    res.json(todo)
-};
-
-exports.update = function (req, res) {
-    const data = getTodoData(req.user.id)
-    const id = req.path.id
-    todo = data.items[id]
-    if (todo == null) {
-        return res.status(404).send({
-            message: 'No todo record found'
-        })
-    }
-
-    todo.content = req.body.content
-    data.items[id] = todo
-    setTodoData(req.user.id, data)
-
-    res.json(todo)
-};
-
 exports.delete = function (req, res) {
     const data = getTodoData(req.user.id)
-    const id = req.path.id //????
-    data.items.delete(id)
+    const id = req.params.taskId
+    delete data.items[id]
     setTodoData(req.user.id, data)
 
-    return res.status(204)
+    res.status(204)
+    res.send()
 };
 
 function getTodoData (userID) {

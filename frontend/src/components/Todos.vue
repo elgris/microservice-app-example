@@ -118,8 +118,18 @@ export default {
     },
 
     removeTask (index) {
-      // TODO: delete physically
-      this.tasks.splice(index, 1)
+      const item = this.tasks[index]
+
+      this.isProcessing = true
+      this.errorMessage = ''
+
+      this.$http.delete('/todos/' + item.id).then(response => {
+        this.isProcessing = false
+        this.tasks.splice(index, 1)
+      }, error => {
+        this.isProcessing = false
+        this.errorMessage = JSON.stringify(error.body) + '. Response code: ' + error.status
+      })
     }
   }
 }
