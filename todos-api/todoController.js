@@ -3,7 +3,7 @@ var cache = require('memory-cache');
 
 // TODO: these functions are not concurrent-safe
 exports.list = function (req, res) {
-    const data = getTodoData(req.user.id)
+    const data = getTodoData(req.user.username)
 
     res.json(data.items)
 };
@@ -16,20 +16,19 @@ exports.create = function (req, res) {
         content: req.body.content,
         id: data.lastInsertedID
     }
+    data.items[data.lastInsertedID] = todo
 
     data.lastInsertedID++
-
-    data.items[data.lastInsertedID] = todo
-    setTodoData(req.user.id, data)
+    setTodoData(req.user.username, data)
 
     res.json(todo)
 };
 
 exports.delete = function (req, res) {
-    const data = getTodoData(req.user.id)
+    const data = getTodoData(req.user.username)
     const id = req.params.taskId
     delete data.items[id]
-    setTodoData(req.user.id, data)
+    setTodoData(req.user.username, data)
 
     res.status(204)
     res.send()
