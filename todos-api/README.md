@@ -3,10 +3,8 @@
 This service is written in NodeJS, it provides CRUD operations over TODO entries. 
 It keeps all the data in memory. Following API endpoints are exposed:
 
-- `GET /todos?userId=id` - list all TODOs for a given user
+- `GET /todos` - list all TODOs for a given user, user ID is taken from JWT
 - `POST /todos` - create new TODO
-- `GET /todos/:taskId` - get a TODO by ID
-- `PUT /todos/:taskId` - modify a TODO by ID
 - `DELETE /todos/:taskId` - modify a TODO by ID
 
 TODO object looks like this:
