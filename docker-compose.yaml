@@ -4,6 +4,8 @@ services:
     build: ./frontend
     environment:
       PORT: 8080
+      AUTH_API_ADDRESS: auth-api:8081
+      TODOS_API_ADDRESS: todos-api:8082
     ports:
       - 8080:8080
     depends_on:
