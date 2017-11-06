@@ -4,12 +4,12 @@ EXPOSE 8080
 
 WORKDIR /usr/src/app
 
-RUN npm install && npm build
-
 COPY package.json index.html .* /usr/src/app/
+RUN npm install
+
 COPY build/ /usr/src/app/build
 COPY config/ /usr/src/app/config
 COPY src/ /usr/src/app/src
 COPY static/ /usr/src/app/static
 
-CMD ["sh", "-c", "npm i && npm start" ]
+CMD ["sh", "-c", "npm start" ]
