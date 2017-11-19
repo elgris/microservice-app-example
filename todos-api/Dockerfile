@@ -7,4 +7,6 @@ WORKDIR /usr/src/app
 COPY package-lock.json package.json *.js /usr/src/app/
 COPY routes /usr/src/app/routes
 
-CMD [ "sh" ]
+RUN npm install && npm build
+
+CMD ["sh", "-c", "npm start" ]
