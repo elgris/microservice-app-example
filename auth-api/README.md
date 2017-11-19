@@ -33,7 +33,7 @@ Following users are hardcoded for you:
 
 ## Building and running
 
-1. Update the dependencies
+1. Update the dependencies with [glide](https://github.com/Masterminds/glide)
 ```
 glide up
 ```
