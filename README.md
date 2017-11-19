@@ -12,7 +12,8 @@ The app itself is a simple TODO app that additionally authenticates users. I pla
 4. [Users API](/users-api) is a Spring Boot project written in Java. Provides user profiles. Does not provide full CRUD for simplicity, just getting a single user and all users.
 
 Take a look at the components diagram that describes them and their interactions.
-[put diagram here]
+![microservice-app-example](https://user-images.githubusercontent.com/1905821/32994354-554c4574-cd66-11e7-872b-55a37b6864c2.png)
+
 ## Use cases
 
 - Evaluate various instruments (monitoring, tracing, you name it): how easy they integrate, do they have any bugs with different languages, etc.
