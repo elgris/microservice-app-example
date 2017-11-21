@@ -11,7 +11,5 @@ RUN wget http://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/ap
   mv apache-maven-$MAVEN_VERSION /usr/lib/mvn
 
 COPY . /tmp
-CMD cd tmp
-CMD mvn install
 
-CMD java -jar target/users-api-0.0.1-SNAPSHOT.jar
+CMD ["/tmp/run.sh"]
