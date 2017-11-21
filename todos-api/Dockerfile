@@ -4,8 +4,9 @@ EXPOSE 8082
 
 WORKDIR /usr/src/app
 
-COPY package-lock.json package.json *.js /usr/src/app/
+COPY package.json ./
+RUN npm install
 
-RUN npm install && npm build
+COPY . .
 
 CMD ["sh", "-c", "npm start" ]

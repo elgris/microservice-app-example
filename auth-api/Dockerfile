@@ -1,11 +1,16 @@
-FROM ubuntu:latest
+FROM golang:1.9-alpine
+
 EXPOSE 8081
 
-RUN apt-get update -y && apt-get install curl -y && apt-get install golang -y && apt-get install git -y
+WORKDIR /go/src/app
+RUN apk --no-cache add curl git && \
+    curl https://glide.sh/get | sh
 
-ENV GOPATH /usr
+COPY glide.* ./
+RUN glide install
 
-COPY . /auth-api
+COPY . .
+RUN go build -o auth-api
 
-CMD ["/auth-api/run.sh"]
+CMD /go/src/app/auth-api
 
