@@ -1,0 +1,28 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: microservice-app-example
+  name: frontend
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: microservice-app-example
+        service: frontend
+    spec:
+      containers:
+      - env:
+        - name: AUTH_API_ADDRESS
+          value: http://auth-api:8081
+        - name: PORT
+          value: "8080"
+        - name: TODOS_API_ADDRESS
+          value: http://todos-api:8082
+        image: frontend
+        name: frontend
+        ports:
+        - containerPort: 8080
+        imagePullPolicy: Never
+      restartPolicy: Always

@@ -2,6 +2,7 @@ version: "3"
 services:
   frontend:
     build: ./frontend
+    image: frontend
     environment:
       PORT: 8080
       AUTH_API_ADDRESS: http://auth-api:8081
@@ -15,6 +16,7 @@ services:
   
   auth-api:
     build: ./auth-api
+    image: auth-api
     environment:
       AUTH_API_PORT: 8081
       JWT_SECRET: myfancysecret         
@@ -24,12 +26,14 @@ services:
   
   todos-api:
     build: ./todos-api
+    image: todos-api
     environment:
       TODO_API_PORT: 8082
       JWT_SECRET: myfancysecret    
      
   users-api:
     build: ./users-api
+    image: users-api
     environment:
      SERVER_PORT: 8083
      JWT_SECRET: myfancysecret

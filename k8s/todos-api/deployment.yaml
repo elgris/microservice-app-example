@@ -1,0 +1,26 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: microservice-app-example
+  name: todos-api
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: microservice-app-example
+        service: todos-api
+    spec:
+      containers:
+      - env:
+        - name: JWT_SECRET
+          value: myfancysecret
+        - name: TODO_API_PORT
+          value: "8082"
+        image: todos-api
+        name: todos-api
+        ports:
+        - containerPort: 8082
+        imagePullPolicy: Never
+      restartPolicy: Always

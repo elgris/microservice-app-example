@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: microservice-app-example
+  name: todos-api
+spec:
+  ports:
+  - port: 8082
+  selector:
+    service: todos-api
