@@ -23,7 +23,7 @@ Take a look at the components diagram that describes them and their interactions
 The easiest way is to use `docker-compose`:
 
 ```
-docker-compose up
+docker-compose up --build
 ```
 
 ## Contribution
