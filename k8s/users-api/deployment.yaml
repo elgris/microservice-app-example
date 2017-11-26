@@ -1,0 +1,26 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: microservice-app-example
+  name: users-api
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: microservice-app-example
+        service: users-api
+    spec:
+      containers:
+      - env:
+        - name: JWT_SECRET
+          value: myfancysecret
+        - name: SERVER_PORT
+          value: "8083"
+        image: users-api
+        name: users-api
+        ports:
+        - containerPort: 8083
+        imagePullPolicy: Never
+      restartPolicy: Always
