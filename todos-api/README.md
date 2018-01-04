@@ -28,3 +28,9 @@ The service scans environment for variables:
 npm install
 JWT_SECRET=foo TODO_API_PORT=8082  npm start
 ```
+
+## Usage
+
+```
+ curl -X POST -H "Authorization: Bearer $token" 127.0.0.1:8082/todos -d '{"content": "deal with that"}'
+```
