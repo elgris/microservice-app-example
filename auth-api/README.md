@@ -25,8 +25,8 @@ The service scans environment for variables:
 
 Following users are hardcoded for you:
 
-|| Username | Password ||
-|-----------------------|
+|  Username | Password  |
+|-----------|-----------|
 | admin     | admin     |
 | johnd     | foo       |
 | janed     | ddd       |
