@@ -13,28 +13,45 @@ services:
       - auth-api
       - todos-api
       - users-api
-  
+
   auth-api:
     build: ./auth-api
     image: auth-api
     environment:
       AUTH_API_PORT: 8081
-      JWT_SECRET: myfancysecret         
-      USERS_API_ADDRESS: "http://users-api:8083"    
+      JWT_SECRET: myfancysecret
+      USERS_API_ADDRESS: "http://users-api:8083"
     depends_on:
-      - users-api     
-  
+      - users-api
+
   todos-api:
     build: ./todos-api
     image: todos-api
     environment:
       TODO_API_PORT: 8082
-      JWT_SECRET: myfancysecret    
-     
+      JWT_SECRET: myfancysecret
+      REDIS_HOST: redis-queue
+      REDIS_PORT: 6379
+      REDIS_CHANNEL: log_channel
+    depends_on:
+      - redis-queue
+
   users-api:
     build: ./users-api
     image: users-api
     environment:
      SERVER_PORT: 8083
      JWT_SECRET: myfancysecret
-    
+
+  log-message-processor:
+    build: ./log-message-processor
+    image: log-message-processor
+    environment:
+      REDIS_HOST: redis-queue
+      REDIS_PORT: 6379
+      REDIS_CHANNEL: log_channel
+    depends_on:
+      - redis-queue
+  
+  redis-queue:
+    image: redis
