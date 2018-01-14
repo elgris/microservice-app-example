@@ -8,11 +8,12 @@ The app itself is a simple TODO app that additionally authenticates users. I pla
 
 1. [Frontend](/frontend) part is a Javascript application, provides UI. Created with [VueJS](http://vuejs.org)
 2. [Auth API](/auth-api) is written in Go and provides authorization functionality. Generates JWT tokens to be used with other APIs.
-3. [TODOs API](/todos-api) is written with NodeJS, provides CRUD functionality ove user's todo records.
+3. [TODOs API](/todos-api) is written with NodeJS, provides CRUD functionality ove user's todo records. Also, it logs "create" and "delete" operations to Redis queue, so they can be later processed by [Log Message Processor](/log-message-processor).
 4. [Users API](/users-api) is a Spring Boot project written in Java. Provides user profiles. Does not provide full CRUD for simplicity, just getting a single user and all users.
+4. [Log Message Processor](/log-message-processor) is a very short queue processor written in Python. It's sole purpose is to read messages from Redis queue and print them to stdout
 
 Take a look at the components diagram that describes them and their interactions.
-![microservice-app-example](https://user-images.githubusercontent.com/1905821/32994354-554c4574-cd66-11e7-872b-55a37b6864c2.png)
+![microservice-app-example](https://user-images.githubusercontent.com/1905821/34918427-a931d84e-f952-11e7-85a0-ace34a2e8edb.png)
 
 ## Use cases
 
