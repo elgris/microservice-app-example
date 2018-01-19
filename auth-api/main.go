@@ -23,7 +23,7 @@ var (
 )
 
 func main() {
-	port := os.Getenv("AUTH_API_PORT")
+	hostport := ":" + os.Getenv("AUTH_API_PORT")
 	userAPIAddress := os.Getenv("USERS_API_ADDRESS")
 
 	envJwtSecret := os.Getenv("JWT_SECRET")
@@ -44,6 +44,10 @@ func main() {
 	e := echo.New()
 
 	// Middleware
+	if zipkinURL := os.Getenv("ZIPKIN_URL"); len(zipkinURL) != 0 {
+		e.Use(TracingMiddleware(zipkinURL, hostport))
+	}
+
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Use(middleware.CORS())
@@ -56,7 +60,7 @@ func main() {
 	e.POST("/login", getLoginHandler(userService))
 
 	// Start server
-	e.Logger.Fatal(e.Start(":" + port))
+	e.Logger.Fatal(e.Start(hostport))
 }
 
 type LoginRequest struct {
