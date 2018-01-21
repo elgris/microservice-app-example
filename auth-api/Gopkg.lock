@@ -2,10 +2,28 @@
 
 
 [[projects]]
+  name = "cloud.google.com/go"
+  packages = ["compute/metadata","internal/version","trace/apiv2"]
+  revision = "767c40d6a2e058483c25fa193e963a22da17236d"
+  version = "v0.18.0"
+
+[[projects]]
   name = "github.com/dgrijalva/jwt-go"
   packages = ["."]
   revision = "d2709f9f1f31ebcda9651b03077758c1f3a0018c"
   version = "v3.0.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/golang/protobuf"
+  packages = ["proto","protoc-gen-go/descriptor","ptypes","ptypes/any","ptypes/duration","ptypes/empty","ptypes/timestamp","ptypes/wrappers"]
+  revision = "1e59b77b52bf8e4b449a57e6f79f21226d571845"
+
+[[projects]]
+  name = "github.com/googleapis/gax-go"
+  packages = ["."]
+  revision = "317e0006254c44a0ac427cc52a0e083ff0b9622f"
+  version = "v2.0.0"
 
 [[projects]]
   name = "github.com/labstack/echo"
@@ -33,6 +51,12 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/openzipkin/zipkin-go"
+  packages = [".","idgenerator","model","propagation","reporter","reporter/http"]
+  revision = "b96b48a793c036f199492cf553e348714ccbd0a1"
+
+[[projects]]
+  branch = "master"
   name = "github.com/valyala/bytebufferpool"
   packages = ["."]
   revision = "e746df99fe4a3986f4d4f79e13c1e0117ce9c2f7"
@@ -46,7 +70,7 @@
 [[projects]]
   branch = "master"
   name = "go.opencensus.io"
-  packages = ["plugin/http/httptrace","trace","trace/propagation"]
+  packages = ["exporter/trace/stackdriver","exporter/trace/zipkin","internal","plugin/http/httptrace","trace","trace/propagation"]
   revision = "2191e3e86ea6a0d94dcf946813ce50cb3b88502f"
 
 [[projects]]
@@ -56,13 +80,61 @@
   revision = "a6600008915114d9c087fad9f03d75087b1a74df"
 
 [[projects]]
+  branch = "master"
+  name = "golang.org/x/net"
+  packages = ["context","context/ctxhttp","http2","http2/hpack","idna","internal/timeseries","lex/httplex","trace"]
+  revision = "5ccada7d0a7ba9aeb5d3aca8d3501b4c2a509fec"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/oauth2"
+  packages = [".","google","internal","jws","jwt"]
+  revision = "b28fcf2b08a19742b43084fb40ab78ac6c3d8067"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/sync"
+  packages = ["semaphore"]
+  revision = "fd80eb99c8f653c847d294a001bdf2a3a6f768f5"
+
+[[projects]]
   name = "golang.org/x/sys"
   packages = ["unix"]
   revision = "d4feaf1a7e61e1d9e79e6c4e76c6349e9cab0a03"
 
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/text"
+  packages = ["collate","collate/build","internal/colltab","internal/gen","internal/tag","internal/triegen","internal/ucd","language","secure/bidirule","transform","unicode/bidi","unicode/cldr","unicode/norm","unicode/rangetable"]
+  revision = "e19ae1496984b1c655b8044a65c0300a3c878dd3"
+
+[[projects]]
+  branch = "master"
+  name = "google.golang.org/api"
+  packages = ["googleapi/transport","internal","option","support/bundler","transport","transport/grpc","transport/http"]
+  revision = "85dbeadc18ffa798f2716d8c48a2c1153470743a"
+
+[[projects]]
+  name = "google.golang.org/appengine"
+  packages = [".","internal","internal/app_identity","internal/base","internal/datastore","internal/log","internal/modules","internal/remote_api","internal/socket","internal/urlfetch","socket","urlfetch"]
+  revision = "150dc57a1b433e64154302bdc40b6bb8aefa313a"
+  version = "v1.0.0"
+
+[[projects]]
+  branch = "master"
+  name = "google.golang.org/genproto"
+  packages = ["googleapis/api/annotations","googleapis/devtools/cloudtrace/v2","googleapis/rpc/status"]
+  revision = "a8101f21cf983e773d0c1133ebc5424792003214"
+
+[[projects]]
+  name = "google.golang.org/grpc"
+  packages = [".","balancer","balancer/base","balancer/roundrobin","codes","connectivity","credentials","credentials/oauth","encoding","grpclb/grpc_lb_v1/messages","grpclog","internal","keepalive","metadata","naming","peer","resolver","resolver/dns","resolver/passthrough","stats","status","tap","transport"]
+  revision = "6b51017f791ae1cfbec89c52efdf444b13b550ef"
+  version = "v1.9.2"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "ae2435c4aa9f7ea7e54f570cc06689563f68fb058d6d27e87dd9f60687c2dc57"
+  inputs-digest = "c59daaefd4ef3c62fa871cbac19f4d728ea444fc2f32dc6f0e6b9e42e68ded97"
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -31,3 +31,7 @@
 [[constraint]]
   branch = "master"
   name = "go.opencensus.io"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/openzipkin/zipkin-go"

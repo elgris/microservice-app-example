@@ -10,6 +10,12 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
+	openzipkin "github.com/openzipkin/zipkin-go"
+	openzipkinhttp "github.com/openzipkin/zipkin-go/reporter/http"
+	"go.opencensus.io/exporter/trace/stackdriver"
+	"go.opencensus.io/exporter/trace/zipkin"
+	"go.opencensus.io/plugin/http/httptrace"
+	"go.opencensus.io/trace"
 )
 
 var (
@@ -40,12 +46,13 @@ func main() {
 		},
 	}
 
-	// Echo instance
 	e := echo.New()
 
 	// Middleware
 	if zipkinURL := os.Getenv("ZIPKIN_URL"); len(zipkinURL) != 0 {
-		e.Use(TracingMiddleware(zipkinURL, hostport))
+		if err := initTracing(zipkinURL, hostport, e); err != nil {
+			e.Logger.Errorf("could not init tracing: %s", err.Error())
+		}
 	}
 
 	e.Use(middleware.Logger())
@@ -61,6 +68,24 @@ func main() {
 
 	// Start server
 	e.Logger.Fatal(e.Start(hostport))
+}
+
+func initTracing(zipkinURL, hostport string, e *echo.Echo) error {
+	zipkinReporter := openzipkinhttp.NewReporter(zipkinURL)
+
+	endpoint, err := openzipkin.NewEndpoint("auth-api", hostport)
+	if err != nil {
+		return err
+	}
+	exporter := zipkin.NewExporter(zipkinReporter, endpoint)
+	trace.RegisterExporter(exporter)
+	trace.SetDefaultSampler(trace.AlwaysSample())
+
+	propagator := &stackdriver.Exporter{}
+	e.Server.Handler = httptrace.NewHandler(e, propagator)
+	e.TLSServer.Handler = httptrace.NewHandler(e, propagator)
+
+	return nil
 }
 
 type LoginRequest struct {
