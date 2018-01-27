@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo"
+	openzipkin "github.com/openzipkin/zipkin-go"
 	openzipkinhttp "github.com/openzipkin/zipkin-go/reporter/http"
 	"go.opencensus.io/exporter/trace/zipkin"
 	"go.opencensus.io/trace"
@@ -21,9 +22,8 @@ var ErrNoSpanInContext error = errors.New("could not find tracing span in contex
 func TracingMiddleware(zipkinURL string, formats ...propagation.HTTPFormat) echo.MiddlewareFunc {
 	zipkinReporter := openzipkinhttp.NewReporter(zipkinURL)
 
-	// endpoint := zipkin.NewEndpoint("auth-api", appHostPort)
-	// exporter := zipkin.NewExporter(zipkinReporter, endpoint)
-	exporter := zipkin.NewExporter(zipkinReporter, nil)
+	endpoint, _ := openzipkin.NewEndpoint("auth-api", "")
+	exporter := zipkin.NewExporter(zipkinReporter, endpoint)
 
 	trace.RegisterExporter(exporter)
 	trace.SetDefaultSampler(trace.AlwaysSample())
