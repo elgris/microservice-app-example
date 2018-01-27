@@ -49,9 +49,6 @@ func main() {
 	if zipkinURL := os.Getenv("ZIPKIN_URL"); len(zipkinURL) != 0 {
 		e.Logger.Infof("init tracing to Zipkit at %s", zipkinURL)
 		e.Use(TracingMiddleware(zipkinURL, &stackdriver.Exporter{}))
-		// if err := initTracing(zipkinURL, hostport, e); err != nil {
-		// 	e.Logger.Errorf("could not init tracing: %s", err.Error())
-		// }
 	}
 
 	e.Use(middleware.Logger())
