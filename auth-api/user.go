@@ -22,7 +22,12 @@ type User struct {
 	Role      string `json:"role"`
 }
 
+type HTTPDoer interface {
+	Do(req *http.Request) (*http.Response, error)
+}
+
 type UserService struct {
+	Client            HTTPDoer
 	UserAPIAddress    string
 	AllowedUserHashes map[string]interface{}
 }
@@ -54,7 +59,7 @@ func (h *UserService) getUser(username string) (User, error) {
 	req, _ := http.NewRequest("GET", url, nil)
 	req.Header.Add("Authorization", "Bearer "+token)
 
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := h.Client.Do(req)
 	if err != nil {
 		return user, err
 	}

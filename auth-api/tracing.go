@@ -1,61 +1,45 @@
 package main
 
 import (
-	"errors"
 	"net/http"
 
-	"github.com/labstack/echo"
-	openzipkin "github.com/openzipkin/zipkin-go"
-	openzipkinhttp "github.com/openzipkin/zipkin-go/reporter/http"
-	"go.opencensus.io/exporter/trace/zipkin"
-	"go.opencensus.io/trace"
-	"go.opencensus.io/trace/propagation"
+	zipkin "github.com/openzipkin/zipkin-go"
+	zipkinhttp "github.com/openzipkin/zipkin-go/middleware/http"
+	zipkinhttpreporter "github.com/openzipkin/zipkin-go/reporter/http"
 )
 
-type ctxkey int
-
-var ErrNoSpanInContext error = errors.New("could not find tracing span in context")
-
-// TracingMiddleware returns an echo-compatible middleware
-// that creates new tracing span for every incoming requets. A span
-// then stored to request context context .
-func TracingMiddleware(zipkinURL string, formats ...propagation.HTTPFormat) echo.MiddlewareFunc {
-	zipkinReporter := openzipkinhttp.NewReporter(zipkinURL)
-
-	endpoint, _ := openzipkin.NewEndpoint("auth-api", "")
-	exporter := zipkin.NewExporter(zipkinReporter, endpoint)
-
-	trace.RegisterExporter(exporter)
-	trace.SetDefaultSampler(trace.AlwaysSample())
-
-	return func(next echo.HandlerFunc) echo.HandlerFunc {
-		return func(c echo.Context) (err error) {
-			req := c.Request()
-			operationName := req.Method + " " + c.Path()
-			sc, ok := extractSpanContext(req, formats)
-
-			ctx := req.Context()
-			if ok {
-				ctx = trace.StartSpanWithRemoteParent(ctx, operationName, sc, trace.StartSpanOptions{})
-			} else {
-				ctx = trace.StartSpan(ctx, operationName)
-			}
-			defer trace.EndSpan(ctx)
-
-			c.SetRequest(req.WithContext(ctx))
-
-			next(c)
-			return nil
-		}
-	}
+type TracedClient struct {
+	client *zipkinhttp.Client
 }
 
-func extractSpanContext(r *http.Request, formats []propagation.HTTPFormat) (sc trace.SpanContext, ok bool) {
-	for _, f := range formats {
-		sc, ok = f.FromRequest(r)
-		if ok {
-			return
-		}
+func (c *TracedClient) Do(req *http.Request) (*http.Response, error) {
+	name := req.Method + " " + req.RequestURI
+	return c.client.DoWithAppSpan(req, name)
+}
+
+func initTracing(zipkinURL string) (func(http.Handler) http.Handler, *TracedClient, error) {
+	reporter := zipkinhttpreporter.NewReporter(zipkinURL)
+
+	endpoint, err := zipkin.NewEndpoint("auth-api", "")
+	if err != nil {
+		return nil, nil, err
 	}
-	return
+
+	tracer, err := zipkin.NewTracer(reporter, zipkin.WithLocalEndpoint(endpoint))
+	if err != nil {
+		return nil, nil, err
+	}
+
+	// create global zipkin http server middleware
+	serverMiddleware := zipkinhttp.NewServerMiddleware(
+		tracer, zipkinhttp.TagResponseSize(true),
+	)
+
+	// create global zipkin traced http client
+	client, err := zipkinhttp.NewClient(tracer, zipkinhttp.ClientTrace(true))
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return serverMiddleware, &TracedClient{client}, nil
 }
