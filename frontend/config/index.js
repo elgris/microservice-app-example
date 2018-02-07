@@ -29,13 +29,20 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/login': {
-        target: process.env.AUTH_API_ADDRESS || 'http://localhost:8081',
+        target: process.env.AUTH_API_ADDRESS || 'http://127.0.0.1:8081',
         secure: false
       },
       '/todos': {
-        target: process.env.TODOS_API_ADDRESS || 'http://localhost:8082',
+        target: process.env.TODOS_API_ADDRESS || 'http://127.0.0.1:8082',
         secure: false
-      }
+      },
+      '/zipkin': {
+        target: process.env.ZIPKIN_ADDRESS || 'http://127.0.0.1:9411/api/v2/spans',
+        pathRewrite: {
+          '^/zipkin': ''
+        },
+        secure: false
+      },      
     },
     // CSS Sourcemaps off by default because relative paths are "buggy"
     // with this option, according to the CSS-Loader README

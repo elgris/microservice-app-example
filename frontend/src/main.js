@@ -19,6 +19,10 @@ Vue.config.productionTip = false
 import Auth from './auth'
 Vue.use(Auth)
 
+/* Auth plugin */
+import Zipkin from './zipkin'
+Vue.use(Zipkin)
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
