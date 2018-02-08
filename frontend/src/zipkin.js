@@ -3,7 +3,7 @@ import {
   BatchRecorder,
   ExplicitContext,
   Instrumentation,
-  JSON_V2
+  jsonEncoder
 } from 'zipkin'
 import {HttpLogger} from 'zipkin-transport-http'
 
@@ -31,7 +31,7 @@ export default {
       recorder: new BatchRecorder({
         logger: new HttpLogger({
           endpoint: ZIPKIN_URL,
-          jsonEncoder: JSON_V2
+          jsonEncoder: jsonEncoder.JSON_V2
         })
       }),
       localServiceName: 'frontend'
@@ -40,7 +40,12 @@ export default {
     const instrumentation = new Instrumentation.HttpClient({tracer, serviceName})
     Vue.http.interceptors.push((request, next) => {
       tracer.scoped(() => {
-        request = instrumentation.recordRequest(request, request.url, request.method)
+        const options = instrumentation.recordRequest({}, request.url, request.method)
+        for (var key in options.headers) {
+          if (options.headers.hasOwnProperty(key)) {
+            request.headers.set(key, options.headers[key])
+          }
+        }
         const traceId = tracer.id
         next(function (response) {
           tracer.scoped(() => {
