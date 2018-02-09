@@ -25,7 +25,9 @@ func initTracing(zipkinURL string) (func(http.Handler) http.Handler, *TracedClie
 		return nil, nil, err
 	}
 
-	tracer, err := zipkin.NewTracer(reporter, zipkin.WithLocalEndpoint(endpoint))
+	tracer, err := zipkin.NewTracer(reporter,
+		zipkin.WithLocalEndpoint(endpoint),
+		zipkin.WithSharedSpans(false))
 	if err != nil {
 		return nil, nil, err
 	}

@@ -87,7 +87,8 @@ func getLoginHandler(userService UserService) echo.HandlerFunc {
 			return ErrHttpGenericMessage
 		}
 
-		user, err := userService.Login(requestData.Username, requestData.Password)
+		ctx := c.Request().Context()
+		user, err := userService.Login(ctx, requestData.Username, requestData.Password)
 		if err != nil {
 			if err != ErrWrongCredentials {
 				log.Printf("could not authorize user '%s': %s", requestData.Username, err.Error())

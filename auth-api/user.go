@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -32,9 +33,8 @@ type UserService struct {
 	AllowedUserHashes map[string]interface{}
 }
 
-func (h *UserService) Login(username, password string) (User, error) {
-
-	user, err := h.getUser(username)
+func (h *UserService) Login(ctx context.Context, username, password string) (User, error) {
+	user, err := h.getUser(ctx, username)
 	if err != nil {
 		return user, err
 	}
@@ -48,7 +48,7 @@ func (h *UserService) Login(username, password string) (User, error) {
 	return user, nil
 }
 
-func (h *UserService) getUser(username string) (User, error) {
+func (h *UserService) getUser(ctx context.Context, username string) (User, error) {
 	var user User
 
 	token, err := h.getUserAPIToken(username)
@@ -58,6 +58,8 @@ func (h *UserService) getUser(username string) (User, error) {
 	url := fmt.Sprintf("%s/users/%s", h.UserAPIAddress, username)
 	req, _ := http.NewRequest("GET", url, nil)
 	req.Header.Add("Authorization", "Bearer "+token)
+
+	req = req.WithContext(ctx)
 
 	resp, err := h.Client.Do(req)
 	if err != nil {
@@ -71,7 +73,6 @@ func (h *UserService) getUser(username string) (User, error) {
 	}
 
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-
 		return user, fmt.Errorf("could not get user data: %s", string(bodyBytes))
 	}
 
