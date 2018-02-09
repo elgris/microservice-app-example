@@ -2,7 +2,10 @@ const express = require('express')
 const bodyParser = require("body-parser")
 const jwt = require('express-jwt')
 
-const {Tracer, ExplicitContext, BatchRecorder} = require('zipkin');
+const {Tracer, 
+  ExplicitContext, 
+  BatchRecorder,
+  jsonEncoder: {JSON_V2}} = require('zipkin');
 const {HttpLogger} = require('zipkin-transport-http');
 const zipkinMiddleware = require('zipkin-instrumentation-express').expressMiddleware;
 
@@ -17,7 +20,8 @@ const app = express()
 const ctxImpl = new ExplicitContext();
 const recorder = new  BatchRecorder({
   logger: new HttpLogger({
-    endpoint: ZIPKIN_URL
+    endpoint: ZIPKIN_URL,
+    jsonEncoder: JSON_V2
   })
 });
 const localServiceName = 'todos-api';
