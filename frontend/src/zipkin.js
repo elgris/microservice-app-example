@@ -2,11 +2,10 @@ import {
   Tracer,
   BatchRecorder,
   ExplicitContext,
-  Instrumentation,
   jsonEncoder
 } from 'zipkin'
 import {HttpLogger} from 'zipkin-transport-http'
-
+import {zipkinInterceptor} from 'zipkin-instrumentation-vue-resource'
 const ZIPKIN_URL = window.location.protocol + '//' + window.location.host + '/zipkin'
 /**
 * Tracing plugin that uses Zipkin. Initiates new traces with outgoing requests
@@ -34,25 +33,10 @@ export default {
           jsonEncoder: jsonEncoder.JSON_V2
         })
       }),
-      localServiceName: 'frontend'
+      localServiceName: serviceName
     })
 
-    const instrumentation = new Instrumentation.HttpClient({tracer, serviceName})
-    Vue.http.interceptors.push((request, next) => {
-      tracer.scoped(() => {
-        const options = instrumentation.recordRequest({}, request.url, request.method)
-        for (var key in options.headers) {
-          if (options.headers.hasOwnProperty(key)) {
-            request.headers.set(key, options.headers[key])
-          }
-        }
-        const traceId = tracer.id
-        next(function (response) {
-          tracer.scoped(() => {
-            instrumentation.recordResponse(traceId, response.status)
-          })
-        })
-      })
-    })
+    const interceptor = zipkinInterceptor({tracer, serviceName})
+    Vue.http.interceptors.push(interceptor)
   }
 }

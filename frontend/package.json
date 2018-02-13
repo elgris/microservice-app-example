@@ -18,6 +18,7 @@
     "vue-router": "^2.6.0",
     "vuex": "^2.3.1",
     "zipkin": "^0.11.2",
+    "zipkin-instrumentation-vue-resource": "^0.1.0",
     "zipkin-transport-http": "^0.11.2"
   },
   "devDependencies": {
