@@ -21,7 +21,6 @@ class TodoController {
     }
 
     create (req, res) {
-        console.log(this)
         // TODO: must be transactional and protected for concurrent access, but
         // the purpose of the whole example app it's enough
         const data = this._getTodoData(req.user.username)
@@ -56,8 +55,6 @@ class TodoController {
             var tracer = this._tracer;
             const traceId = tracer.createChildId();
 
-            console.log(this._tracer, traceId)
-            
             tracer.setId(traceId);
             tracer.recordServiceName(tracer._localEndpoint.serviceName);
             tracer.recordAnnotation(new Annotation.ClientSend());
