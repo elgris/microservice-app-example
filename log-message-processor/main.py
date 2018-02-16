@@ -10,7 +10,7 @@ import random
 def log_message(message):
     time_delay = random.randrange(0, 2000)
     time.sleep(time_delay / 1000)
-    print ('message received after waiting for {}ms: {}'.format(time_delay, message))
+    print('message received after waiting for {}ms: {}'.format(time_delay, message))
 
 if __name__ == '__main__':
     redis_host = os.environ['REDIS_HOST']
@@ -38,20 +38,24 @@ if __name__ == '__main__':
             continue
 
         span_data = message['zipkinSpan']
-        with zipkin_span(
-            service_name='log-message-processor',
-            zipkin_attrs=ZipkinAttrs(
-                trace_id=span_data['_traceId']['value'],
-                span_id=span_data['_spanId'],
-                parent_span_id=span_data['_parentId']['value'],
-                is_sampled=span_data['_sampled']['value'],
-                flags=None
-            ),
-            span_name='save_log',
-            transport_handler=http_transport,
-            sample_rate=100
-        ):
-            log_message(message)
+        try:
+            with zipkin_span(
+                service_name='log-message-processor',
+                zipkin_attrs=ZipkinAttrs(
+                    trace_id=span_data['_traceId']['value'],
+                    span_id=span_data['_spanId'],
+                    parent_span_id=span_data['_parentId']['value'],
+                    is_sampled=span_data['_sampled']['value'],
+                    flags=None
+                ),
+                span_name='save_log',
+                transport_handler=http_transport,
+                sample_rate=100
+            ):
+                log_message(message)
+        except Exception as e:
+            print('did not send data to Zipkin: {}'.format(e))
+
 
 
 
