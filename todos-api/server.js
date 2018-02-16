@@ -1,7 +1,9 @@
+'use strict';
 const express = require('express')
 const bodyParser = require("body-parser")
 const jwt = require('express-jwt')
 
+const ZIPKIN_URL = process.env.ZIPKIN_ADDRESS || 'http://127.0.0.1:9411/api/v2/spans';
 const {Tracer, 
   ExplicitContext, 
   BatchRecorder,
@@ -9,11 +11,15 @@ const {Tracer,
 const {HttpLogger} = require('zipkin-transport-http');
 const zipkinMiddleware = require('zipkin-instrumentation-express').expressMiddleware;
 
-const routes = require('./routes')
+const logChannel = process.env.REDIS_CHANNEL || 'log_channel';
+const redisClient = require("redis").createClient({
+    host: process.env.REDIS_HOST || 'localhost',
+    port: process.env.REDIS_PORT || 6379,
+});
 
-const ZIPKIN_URL = process.env.ZIPKIN_ADDRESS || 'http://127.0.0.1:9411/api/v2/spans';
 const port = process.env.TODO_API_PORT || 8082
 const jwtSecret = process.env.JWT_SECRET || "myfancysecret"
+
 const app = express()
 
 // tracing
@@ -38,7 +44,8 @@ app.use(function (err, req, res, next) {
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
-routes(app)
+const routes = require('./routes')
+routes(app, {tracer, redisClient, logChannel})
 
 app.listen(port, function () {
   console.log('todo list RESTful API server started on: ' + port)
