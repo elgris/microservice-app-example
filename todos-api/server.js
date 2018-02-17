@@ -13,10 +13,22 @@ const zipkinMiddleware = require('zipkin-instrumentation-express').expressMiddle
 
 const logChannel = process.env.REDIS_CHANNEL || 'log_channel';
 const redisClient = require("redis").createClient({
-    host: process.env.REDIS_HOST || 'localhost',
-    port: process.env.REDIS_PORT || 6379,
+  host: process.env.REDIS_HOST || 'localhost',
+  port: process.env.REDIS_PORT || 6379,
+  retry_strategy: function (options) {
+      if (options.error && options.error.code === 'ECONNREFUSED') {
+          return new Error('The server refused the connection');
+      }
+      if (options.total_retry_time > 1000 * 60 * 60) {
+          return new Error('Retry time exhausted');
+      }
+      if (options.attempt > 10) {
+          console.log('reattemtping to connect to redis, attempt #' + options.attempt)
+          return undefined;
+      }
+      return Math.min(options.attempt * 100, 2000);
+  }        
 });
-
 const port = process.env.TODO_API_PORT || 8082
 const jwtSecret = process.env.JWT_SECRET || "myfancysecret"
 
