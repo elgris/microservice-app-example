@@ -3,30 +3,24 @@ kind: Deployment
 metadata:
   labels:
     app: microservice-app-example
-  name: todos-api
+  name: log-message-processor
 spec:
   replicas: 1
   template:
     metadata:
       labels:
         app: microservice-app-example
-        service: todos-api
+        service: log-message-processor
     spec:
       containers:
       - env:
-        - name: JWT_SECRET
-          value: myfancysecret
-        - name: TODO_API_PORT
-          value: "8082"
         - name: REDIS_HOST
           value: redis-queue
         - name: REDIS_PORT
           value: "6379"
         - name: REDIS_CHANNEL
           value: log_channel
-        image: todos-api
-        name: todos-api
-        ports:
-        - containerPort: 8082
+        image: log-message-processor
+        name: log-message-processor
         imagePullPolicy: Never
       restartPolicy: Always
