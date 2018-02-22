@@ -3,7 +3,7 @@ import redis
 import os
 import json
 import requests
-from py_zipkin.zipkin import zipkin_span, ZipkinAttrs
+from py_zipkin.zipkin import zipkin_span, ZipkinAttrs, generate_random_64bit_string
 import time
 import random
 
@@ -43,7 +43,7 @@ if __name__ == '__main__':
                 service_name='log-message-processor',
                 zipkin_attrs=ZipkinAttrs(
                     trace_id=span_data['_traceId']['value'],
-                    span_id=span_data['_spanId'],
+                    span_id=generate_random_64bit_string(),
                     parent_span_id=span_data['_parentId']['value'],
                     is_sampled=span_data['_sampled']['value'],
                     flags=None
