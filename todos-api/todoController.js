@@ -52,15 +52,7 @@ class TodoController {
 
     _logOperation (opName, username, todoId) {
         this._tracer.scoped(() => {
-            var tracer = this._tracer;
-            const traceId = tracer.createChildId();
-
-            tracer.setId(traceId);
-            tracer.recordServiceName(tracer._localEndpoint.serviceName);
-            tracer.recordAnnotation(new Annotation.ClientSend());
-            tracer.recordAnnotation(new Annotation.BinaryAnnotation('opName', opName));
-            tracer.recordAnnotation(new Annotation.BinaryAnnotation('todoId', todoId));
-            
+            const traceId = this._tracer.id;
             this._redisClient.publish(this._logChannel, JSON.stringify({
                 zipkinSpan: traceId,
                 opName: opName,

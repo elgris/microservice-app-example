@@ -44,7 +44,7 @@ if __name__ == '__main__':
                 zipkin_attrs=ZipkinAttrs(
                     trace_id=span_data['_traceId']['value'],
                     span_id=generate_random_64bit_string(),
-                    parent_span_id=span_data['_parentId']['value'],
+                    parent_span_id=span_data['_spanId'],
                     is_sampled=span_data['_sampled']['value'],
                     flags=None
                 ),
@@ -55,6 +55,7 @@ if __name__ == '__main__':
                 log_message(message)
         except Exception as e:
             print('did not send data to Zipkin: {}'.format(e))
+            log_message(message)
 
 
 
