@@ -58,7 +58,8 @@ class TodoController {
             tracer.setId(traceId);
             tracer.recordServiceName(tracer._localEndpoint.serviceName);
             tracer.recordAnnotation(new Annotation.ClientSend());
-            tracer.recordAnnotation(new Annotation.BinaryAnnotation('opName', todoId));
+            tracer.recordAnnotation(new Annotation.BinaryAnnotation('opName', opName));
+            tracer.recordAnnotation(new Annotation.BinaryAnnotation('todoId', todoId));
             
             this._redisClient.publish(this._logChannel, JSON.stringify({
                 zipkinSpan: traceId,
