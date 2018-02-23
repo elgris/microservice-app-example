@@ -3,7 +3,7 @@ const express = require('express')
 const bodyParser = require("body-parser")
 const jwt = require('express-jwt')
 
-const ZIPKIN_URL = process.env.ZIPKIN_ADDRESS || 'http://127.0.0.1:9411/api/v2/spans';
+const ZIPKIN_URL = process.env.ZIPKIN_URL || 'http://127.0.0.1:9411/api/v2/spans';
 const {Tracer, 
   BatchRecorder,
   jsonEncoder: {JSON_V2}} = require('zipkin');
