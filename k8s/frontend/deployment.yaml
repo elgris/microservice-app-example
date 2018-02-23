@@ -20,6 +20,8 @@ spec:
           value: "8080"
         - name: TODOS_API_ADDRESS
           value: http://todos-api:8082
+        - name: ZIPKIN_URL
+          value: http://zipkin:9411/api/v2/spans
         image: frontend
         name: frontend
         ports:

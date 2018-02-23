@@ -1,12 +1,11 @@
 'use strict';
-module.exports = function (app) {
-  var todoList = require('./todoController');
-
+const TodoController = require('./todoController');
+module.exports = function (app, {tracer, redisClient, logChannel}) {
+  const todoController = new TodoController({tracer, redisClient, logChannel});
   app.route('/todos')
-    .get(todoList.list)
-    .post(todoList.create);
-
+    .get(function(req,resp) {return todoController.list(req,resp)})
+    .post(function(req,resp) {return todoController.create(req,resp)});
 
   app.route('/todos/:taskId')
-    .delete(todoList.delete);
+    .delete(function(req,resp) {return todoController.delete(req,resp)});
 };

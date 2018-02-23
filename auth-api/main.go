@@ -10,6 +10,7 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
+	gommonlog "github.com/labstack/gommon/log"
 )
 
 var (
@@ -23,7 +24,7 @@ var (
 )
 
 func main() {
-	port := os.Getenv("AUTH_API_PORT")
+	hostport := ":" + os.Getenv("AUTH_API_PORT")
 	userAPIAddress := os.Getenv("USERS_API_ADDRESS")
 
 	envJwtSecret := os.Getenv("JWT_SECRET")
@@ -32,6 +33,7 @@ func main() {
 	}
 
 	userService := UserService{
+		Client:         http.DefaultClient,
 		UserAPIAddress: userAPIAddress,
 		AllowedUserHashes: map[string]interface{}{
 			"admin_admin": nil,
@@ -40,10 +42,22 @@ func main() {
 		},
 	}
 
-	// Echo instance
 	e := echo.New()
+	e.Logger.SetLevel(gommonlog.INFO)
 
-	// Middleware
+	if zipkinURL := os.Getenv("ZIPKIN_URL"); len(zipkinURL) != 0 {
+		e.Logger.Infof("init tracing to Zipkit at %s", zipkinURL)
+
+		if tracedMiddleware, tracedClient, err := initTracing(zipkinURL); err == nil {
+			e.Use(echo.WrapMiddleware(tracedMiddleware))
+			userService.Client = tracedClient
+		} else {
+			e.Logger.Infof("Zipkin tracer init failed: %s", err.Error())
+		}
+	} else {
+		e.Logger.Infof("Zipkin URL was not provided, tracing is not initialised")
+	}
+
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Use(middleware.CORS())
@@ -56,7 +70,7 @@ func main() {
 	e.POST("/login", getLoginHandler(userService))
 
 	// Start server
-	e.Logger.Fatal(e.Start(":" + port))
+	e.Logger.Fatal(e.Start(hostport))
 }
 
 type LoginRequest struct {
@@ -73,7 +87,8 @@ func getLoginHandler(userService UserService) echo.HandlerFunc {
 			return ErrHttpGenericMessage
 		}
 
-		user, err := userService.Login(requestData.Username, requestData.Password)
+		ctx := c.Request().Context()
+		user, err := userService.Login(ctx, requestData.Username, requestData.Password)
 		if err != nil {
 			if err != ErrWrongCredentials {
 				log.Printf("could not authorize user '%s': %s", requestData.Username, err.Error())

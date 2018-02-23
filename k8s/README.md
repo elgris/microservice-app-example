@@ -20,7 +20,12 @@ Now that the images are built and available in the docker engine of the running 
 $ kubectl create -R -f k8s/
 ```
 
-You can now access the frontend service on your browser like this.
+You can now access the frontend service on your browser like this:
 ```shell
 $ minikube service frontend
+```
+
+To access Zipkin UI you can use this command:
+```shell
+$ minikube service zipkin
 ```

@@ -20,6 +20,9 @@ spec:
           value: "6379"
         - name: REDIS_CHANNEL
           value: log_channel
+        - name: ZIPKIN_URL
+          value: http://zipkin:9411/api/v1/spans
+          
         image: log-message-processor
         name: log-message-processor
         imagePullPolicy: Never
