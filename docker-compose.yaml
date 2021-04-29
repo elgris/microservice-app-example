@@ -1,73 +1,132 @@
 version: "3"
 services:
-  frontend:
-    build: ./frontend
-    image: frontend
-    environment:
-      PORT: 8080
-      AUTH_API_ADDRESS: http://auth-api:8081
-      TODOS_API_ADDRESS: http://todos-api:8082
-      ZIPKIN_URL: http://zipkin:9411/api/v2/spans
-    ports:
-      - 8080:8080
-    depends_on:
-      - zipkin
-      - auth-api
-      - todos-api
-      - users-api
+    frontend:
+        build: ./frontend
+        image: frontend
+        environment:
+            PORT: 8080
+            AUTH_API_ADDRESS: http://auth-api:8081
+            TODOS_API_ADDRESS: http://todos-api:8082
+            ZIPKIN_URL: http://zipkin:9411/api/v2/spans
+        ports:
+            - 8080:8080
+        depends_on:
+            - zipkin
+            - auth-api
+            - todos-api
+            - users-api
 
-  auth-api:
-    build: ./auth-api
-    image: auth-api
-    environment:
-      AUTH_API_PORT: 8081
-      JWT_SECRET: myfancysecret
-      USERS_API_ADDRESS: http://users-api:8083
-      ZIPKIN_URL: http://zipkin:9411/api/v2/spans
-    depends_on:
-      - zipkin
-      - users-api
+    auth-api:
+        build: ./auth-api
+        image: auth-api
+        environment:
+            AUTH_API_PORT: 8081
+            JWT_SECRET: myfancysecret
+            USERS_API_ADDRESS: http://users-api:8083
+            ZIPKIN_URL: http://zipkin:9411/api/v2/spans
+        depends_on:
+            - zipkin
+            - users-api
 
-  todos-api:
-    build: ./todos-api
-    image: todos-api
-    environment:
-      TODO_API_PORT: 8082
-      JWT_SECRET: myfancysecret
-      REDIS_HOST: redis-queue
-      REDIS_PORT: 6379
-      REDIS_CHANNEL: log_channel
-      ZIPKIN_URL: http://zipkin:9411/api/v2/spans
-    depends_on:
-      - zipkin
-      - redis-queue
+    todos-api:
+        build: ./todos-api
+        image: todos-api
+        environment:
+            TODO_API_PORT: 8082
+            JWT_SECRET: myfancysecret
+            REDIS_HOST: redis-queue
+            REDIS_PORT: 6379
+            REDIS_CHANNEL: log_channel
+            ZIPKIN_URL: http://zipkin:9411/api/v2/spans
+        depends_on:
+            - zipkin
+            - redis-queue
 
-  users-api:
-    build: ./users-api
-    image: users-api
-    environment:
-     SERVER_PORT: 8083
-     JWT_SECRET: myfancysecret
-     SPRING_ZIPKIN_BASE_URL: http://zipkin:9411
-    depends_on:
-      - zipkin
+    users-api:
+        build: ./users-api
+        image: users-api
+        environment:
+            SERVER_PORT: 8083
+            JWT_SECRET: myfancysecret
+            SPRING_ZIPKIN_BASE_URL: http://zipkin:9411
+        depends_on:
+            - zipkin
      
-  log-message-processor:
-    build: ./log-message-processor
-    image: log-message-processor
-    environment:
-      REDIS_HOST: redis-queue
-      REDIS_PORT: 6379
-      REDIS_CHANNEL: log_channel
-      ZIPKIN_URL: http://zipkin:9411/api/v1/spans
-    depends_on:
-      - zipkin
-      - redis-queue
+    log-message-processor:
+        build: ./log-message-processor
+        image: log-message-processor
+        environment:
+            REDIS_HOST: redis-queue
+            REDIS_PORT: 6379
+            REDIS_CHANNEL: log_channel
+            ZIPKIN_URL: http://zipkin:9411/api/v1/spans
+        depends_on:
+            - zipkin
+            - redis-queue
   
-  zipkin:
-    image: openzipkin/zipkin
-    ports:
-      - 9411:9411
+    zipkin:
+        image: ghcr.io/openzipkin/zipkin:${TAG:-latest}
+        container_name: zipkin
+        environment:
+            - STORAGE_TYPE=mysql
+            # Point the zipkin at the storage backend
+            - MYSQL_HOST=mysqldb
+            # Uncomment to enable self-tracing
+            - SELF_TRACING_ENABLED=true
+            # Uncomment to increase heap size
+            - JAVA_OPTS=-Xms128m -Xmx128m -XX:+ExitOnOutOfMemoryError
+            # Add the baked-in username and password for the zipkin-mysql image
+            - MYSQL_USER=zipkin
+            - MYSQL_PASS=zipkin
+        ports:
+            - 9411:9411
+        # Uncomment to enable debug logging
+        command: --logging.level.zipkin2=DEBUG
+        depends_on:
+            - mysqldb
 
-  redis-queue:
-    image: redis
+    dependencies:
+        image: ghcr.io/openzipkin/zipkin-dependencies
+        container_name: dependencies
+        entrypoint: crond -f
+        environment:
+            - STORAGE_TYPE=mysql
+            - MYSQL_HOST=mysqldb
+            - MYSQL_USER=zipkin
+            - MYSQL_PASS=zipkin
+            - ZIPKIN_LOG_LEVEL=DEBUG
+            # - JAVA_OPTS=-verbose:gc -Xms1G -Xmx1G
+        depends_on:
+            - mysqldb
+    
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        container_name: phpmyadmin
+        links:
+            - mysqldb
+        environment:
+            PMA_HOST: mysqldb
+            PMA_PORT: 3306
+            PMA_ARBITRARY: 1
+        restart: always
+        ports:
+            - 8084:80
+
+    mysqldb:
+        image: ghcr.io/openzipkin/zipkin-mysql:${TAG:-latest}
+        container_name: mysqldb
+        environment:
+            MYSQL_ROOT_PASSWORD:
+            MYSQL_DATABASE: zipkin
+            MYSQL_USER: zipkin
+            MYSQL_PASSWORD: zipkin
+        ports:
+            - 3306:3306
+        volumes:
+            - dbdata:/var/lib/mysql
+
+    redis-queue:
+        image: redis
+
+volumes:
+    dbdata:
