@@ -1,0 +1,19 @@
+name: Todos API Workflow
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build the Docker image
+      working-directory: todos-api
+      run: docker build . --file Dockerfile --tag sample-app-auth-api:${GITHUB_REF##*/}-${GITHUB_SHA}
