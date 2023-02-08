@@ -1,11 +1,17 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
+  namespace: todo
   labels:
     app: microservice-app-example
+    service: users-api
   name: users-api
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: microservice-app-example
+      service: users-api
   template:
     metadata:
       labels:
@@ -13,16 +19,16 @@ spec:
         service: users-api
     spec:
       containers:
-      - env:
-        - name: JWT_SECRET
-          value: myfancysecret
-        - name: SERVER_PORT
-          value: "8083"
-        - name: SPRING_ZIPKIN_BASE_URL
-          value: http://zipkin:9411
-        image: users-api
-        name: users-api
-        ports:
-        - containerPort: 8083
-        imagePullPolicy: Never
+        - env:
+          - name: JWT_SECRET
+            value: myfancysecret
+          - name: SERVER_PORT
+            value: "8083"
+          - name: SPRING_ZIPKIN_BASE_URL
+            value: http://zipkin:9411
+          image: users-api
+          name: users-api
+          ports:
+          - containerPort: 8083
+          imagePullPolicy: Never
       restartPolicy: Always

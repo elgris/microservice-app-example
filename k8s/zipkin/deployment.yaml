@@ -1,11 +1,17 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
+  namespace: todo
   labels:
     app: microservice-app-example
+    service: zipkin
   name: zipkin
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: microservice-app-example
+      service: zipkin
   template:
     metadata:
       labels:
@@ -13,8 +19,7 @@ spec:
         service: zipkin
     spec:
       containers:
-      - env:
-        image: openzipkin/zipkin
+      - image: openzipkin/zipkin
         name: zipkin
         ports:
         - containerPort: 9411

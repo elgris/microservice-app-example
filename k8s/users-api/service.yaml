@@ -1,8 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
+  namespace: todo
   labels:
     app: microservice-app-example
+    service: users-api
   name: users-api
 spec:
   ports:

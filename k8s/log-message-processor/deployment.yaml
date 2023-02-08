@@ -1,11 +1,17 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
+  namespace: todo
   labels:
     app: microservice-app-example
+    service: log-message-processor
   name: log-message-processor
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: microservice-app-example
+      service: log-message-processor
   template:
     metadata:
       labels:
@@ -13,17 +19,17 @@ spec:
         service: log-message-processor
     spec:
       containers:
-      - env:
-        - name: REDIS_HOST
-          value: redis-queue
-        - name: REDIS_PORT
-          value: "6379"
-        - name: REDIS_CHANNEL
-          value: log_channel
-        - name: ZIPKIN_URL
-          value: http://zipkin:9411/api/v1/spans
-          
-        image: log-message-processor
-        name: log-message-processor
-        imagePullPolicy: Never
+        - env:
+          - name: REDIS_HOST
+            value: redis-queue
+          - name: REDIS_PORT
+            value: "6379"
+          - name: REDIS_CHANNEL
+            value: log_channel
+          - name: ZIPKIN_URL
+            value: http://zipkin:9411/api/v1/spans
+            
+          image: log-message-processor
+          name: log-message-processor
+          imagePullPolicy: Never
       restartPolicy: Always
