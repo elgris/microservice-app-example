@@ -2,7 +2,7 @@ name: Auth API Workflow
 
 on:
   push:
-    branches: [ "ci_cd_workflows" ]
+    branches: [ "ci_cd_workflow" ]
     paths:
     - 'todos-api/**'
   
