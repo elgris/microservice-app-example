@@ -1,3 +1,4 @@
+# auth_api
 FROM golang:1.9-alpine
 
 EXPOSE 8081
@@ -13,4 +14,3 @@ RUN dep ensure
 RUN go build -o auth-api
 
 CMD /go/src/app/auth-api
-
