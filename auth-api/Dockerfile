@@ -1,4 +1,4 @@
-# auth_api
+# auth_api_workflow
 FROM golang:1.9-alpine
 
 EXPOSE 8081
