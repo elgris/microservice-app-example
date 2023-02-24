@@ -1,12 +1,14 @@
 apiVersion: v1
 kind: Service
 metadata:
+  namespace: todo
   labels:
     app: microservice-app-example
+    service: frontend
   name: frontend
 spec:
   ports:
   - port: 8080
   selector:
     service: frontend
-  type: LoadBalancer
+  type: ClusterIP
