@@ -33,7 +33,7 @@ class TodoController {
         data.lastInsertedID++
         this._setTodoData(req.user.username, data)
 
-        this._logOperation(OPERATION_CREATE, req.user.username, todo.id)
+        this._logOperation(OPERATION_CREATE, req.user.username, todo.id, todo.content)
 
         res.json(todo)
     }
@@ -50,7 +50,7 @@ class TodoController {
         res.send()
     }
 
-    _logOperation (opName, username, todoId) {
+    _logOperation (opName, username, todoId, todoContent) {
         this._tracer.scoped(() => {
             const traceId = this._tracer.id;
             this._redisClient.publish(this._logChannel, JSON.stringify({
@@ -58,6 +58,7 @@ class TodoController {
                 opName: opName,
                 username: username,
                 todoId: todoId,
+                todoContent: todoContent
             }))
         })
     }
