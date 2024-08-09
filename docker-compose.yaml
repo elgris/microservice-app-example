@@ -16,6 +16,8 @@ services:
       - todos-api
       - users-api
 
+
+     
   auth-api:
     build: ./auth-api
     image: auth-api
